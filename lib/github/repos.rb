@@ -19,7 +19,8 @@ module GitHubBackup
                     else
                       url = "/users/#{opts[:username]}/repos"
                     end
-                    repos = json("#{url}?page=#{i}per_page=100")
+                    repos = json("#{url}?page=#{i}&per_page=100")
+                    abort repos['message'] if repos.is_a?(Hash) && repos.has_key?('message')
                     repos.each do |f|
                         # do we limit to a specific repo?
                         next unless f['name'] == opts[:reponame] if opts[:reponame]
@@ -43,16 +44,16 @@ module GitHubBackup
                 dump_wiki repo if opts[:wiki] && repo['has_wiki']
                 repack repo if opts[:repack]
             end
-            
+
             def clone(repo)
                 %x{git clone #{repo['ssh_url']}}
             end
 
             def fetch_changes(repo)
-                Dir.chdir(repo['repo_path']) 
+                Dir.chdir(repo['repo_path'])
                 %x{git fetch origin}
             end
-            
+
             def get_forks(repo)
                 Dir.chdir(repo['repo_path'])
 
@@ -75,7 +76,7 @@ module GitHubBackup
             end
 
             def create_all_branches(repo)
-                Dir.chdir(repo['repo_path']) 
+                Dir.chdir(repo['repo_path'])
                 %x{for remote in `git branch -r`; do git branch --track $remote; done}
             end
 

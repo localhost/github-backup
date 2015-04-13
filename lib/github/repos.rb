@@ -24,6 +24,7 @@ module GitHubBackup
                     repos.each do |f|
                         # do we limit to a specific repo?
                         next unless f['name'] == opts[:reponame] if opts[:reponame]
+                        next if f['fork'] == true if opts[:skip_fork]
                         backup_repo f
                     end
                     break if repos.size == 0

@@ -38,6 +38,10 @@ github-backup -u hbt -o /tmp \n\n"
                         self.options[:forks] = true
                     end
 
+                    opts.on( '-s', '--skip-fork', 'Optional: skip forked repos') do
+                        self.options[:skip_fork] = true
+                    end
+
                     opts.on( '-b', '--init-branches', 'Optional: init all branches' ) do
                         self.options[:init_branches] = true
                     end
